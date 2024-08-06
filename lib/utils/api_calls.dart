@@ -18,7 +18,7 @@ class ApiCalls {
       print("url $url");
       print("response ${response.body}");
       Map<String, dynamic> json = jsonDecode(response.body);
-      if (json.containsKey("access_token")) {
+      if (json.containsKey("token")) {
         // SharedPrefUtils.instance.putString(TOKEN, json['access_token']!);
         return true;
       } else {

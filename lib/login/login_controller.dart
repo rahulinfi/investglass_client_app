@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:kleber_bank/login/otp_screen.dart';
 
 import '../dashboard/dashboard.dart';
 import '../utils/api_calls.dart';
@@ -10,7 +9,7 @@ class LoginController extends ChangeNotifier {
   bool hidePwd=true;
 
   Future<void> doLogin(BuildContext context) async {
-    CommonFunctions.navigate(context, OTPScreen());
+    CommonFunctions.navigate(context, Dashboard());
     /*CommonFunctions.showLoader(context);
     await ApiCalls.login(userNameController.text, pwdController.text).then(
       (value) {

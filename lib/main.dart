@@ -7,6 +7,7 @@ import 'package:kleber_bank/portfolio/portfolio_controller.dart';
 import 'package:kleber_bank/profile/profile_controller.dart';
 import 'package:kleber_bank/proposals/proposal_controller.dart';
 import 'package:kleber_bank/utils/app_colors.dart';
+import 'package:kleber_bank/utils/shared_pref_utils.dart';
 import 'package:provider/provider.dart';
 
 import 'documents/documents_controller.dart';
@@ -14,8 +15,9 @@ import 'login/login_controller.dart';
 import 'market/market_controller.dart';
 
 double rSize = 0;
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await SharedPrefUtils.createInstance();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
       create: (context) => LoginController(),
