@@ -107,11 +107,12 @@ class _UploadDocumentState extends State<UploadDocument> {
               ),
               Text(
                 content,
-                style: AppStyles.c929292W500S14,
+                style: AppStyles.c929292W500S14.copyWith(fontSize: AppStyles.px12),
               )
             ],
           ),
         ),
+        SizedBox(width: rSize*0.015,),
         if (!isSelected) ...{selectButton(onSelectTap)} else ...{closeButton(onCloseTap)}
       ],
     );

@@ -378,7 +378,7 @@ class _DocumentsState extends State<Documents> {
   popupMenu() {
     return PopupMenuButton<int>(
       child: Icon(Icons.more_vert),
-      padding: EdgeInsets.zero,
+      padding: EdgeInsets.zero,surfaceTintColor: Colors.white,
       position: PopupMenuPosition.under,
       itemBuilder: (context) => [
         popupMenuItem(1,'View',Icons.remove_red_eye,(){}),
@@ -392,7 +392,6 @@ class _DocumentsState extends State<Documents> {
         }),
       ],
       offset: Offset(0, 0),
-      color: Colors.grey,
       elevation: 2,
     );
   }

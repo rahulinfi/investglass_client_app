@@ -31,22 +31,13 @@ class _HomeState extends State<Home> {
       _swipeItems.add(SwipeItem(
           content: Content(text: _names[i], color: _colors[i]),
           likeAction: () {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Liked ${_names[i]}"),
-              duration: Duration(milliseconds: 500),
-            ));
+
           },
           nopeAction: () {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Nope ${_names[i]}"),
-              duration: Duration(milliseconds: 500),
-            ));
+
           },
           superlikeAction: () {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Superliked ${_names[i]}"),
-              duration: Duration(milliseconds: 500),
-            ));
+
           },
           onSlideUpdate: (SlideRegion? region) async {
             print("Region $region");
@@ -174,10 +165,7 @@ class _HomeState extends State<Home> {
                 );
               },
               onStackFinished: () {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text("Stack Finished"),
-                  duration: Duration(milliseconds: 500),
-                ));
+
               },
               itemChanged: (SwipeItem item, int index) {
                 print("item: ${item.content.text}, index: $index");

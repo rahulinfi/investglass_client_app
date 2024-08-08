@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:kleber_bank/portfolio/portfolio_controller.dart';
+import 'package:kleber_bank/portfolio/position_model.dart';
+import 'package:kleber_bank/utils/api_calls.dart';
 import 'package:kleber_bank/utils/app_widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +11,8 @@ import '../utils/app_colors.dart';
 import '../utils/app_styles.dart';
 
 class Positions extends StatefulWidget {
-  const Positions({super.key});
+  final int id;
+  const Positions(this.id,{super.key});
 
   @override
   State<Positions> createState() => _PositionsState();
@@ -16,6 +20,27 @@ class Positions extends StatefulWidget {
 
 class _PositionsState extends State<Positions> {
   late PortfolioController _notifier;
+  final PagingController<int, PositionModel> pagingController = PagingController(firstPageKey: 1);
+  int pageKey=1;
+
+  @override
+  void initState() {
+    pagingController.addPageRequestListener((pageKey) {
+      _fetchPageActivity();
+    });
+    super.initState();
+  }
+
+  Future<void> _fetchPageActivity() async {
+    List<PositionModel> list=await ApiCalls.getPositionList(pageKey,/*widget.id*/17711);
+    final isLastPage = list.length < 10;
+    if (isLastPage) {
+      pagingController.appendLastPage(list);
+    } else {
+      pageKey++;
+      pagingController.appendPage(list, pageKey);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     _notifier = Provider.of<PortfolioController>(context);
@@ -43,120 +68,131 @@ class _PositionsState extends State<Positions> {
                 hint: AppWidgets.dropDownHint('Select Types')),
             SizedBox(height: rSize*0.015,),
             Flexible(
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                return Card(
-                  margin: EdgeInsets.symmetric(vertical: rSize*0.005),
-                  color: Colors.white,
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.all(rSize*0.015),
-                    children: [
-                      GestureDetector(
-                        onTap: () => _notifier.selectPositionIndex(index),
-                        child: Column(
-                          children: [
-                            Row(
+              child:
+              RefreshIndicator(
+                onRefresh: () async {
+                  pageKey = 1;
+                  pagingController.refresh();
+                },
+                child: PagedListView<int, PositionModel>(
+                  pagingController: pagingController,
+                  // shrinkWrap: true,
+                  builderDelegate: PagedChildBuilderDelegate<PositionModel>(noItemsFoundIndicatorBuilder: (context) {
+                    return const SizedBox();
+                  }, itemBuilder: (context, item, index) {
+                    return Card(
+                      margin: EdgeInsets.symmetric(vertical: rSize*0.005),
+                      color: Colors.white,
+                      child: ListView(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        padding: EdgeInsets.all(rSize*0.015),
+                        children: [
+                          GestureDetector(
+                            onTap: () => _notifier.selectPositionIndex(index),
+                            child: Column(
                               children: [
-                                Expanded(
-                                    child: Text(
-                                      'CHF',
-                                      style: AppStyles.c656262W500S16,
-                                    )),
-                                SizedBox(
-                                  width: rSize * 0.015,
-                                ),
-                                RotatedBox(
-                                    quarterTurns: _notifier.selectedPositionIndex == index ? 1 : 3,
-                                    child: Icon(
-                                      Icons.arrow_back_ios_new,
-                                      color: AppColors.kTextFieldInput,
-                                      size: 15,
-                                    )),
-
-                              ],
-                            ),
-                              if (_notifier.selectedPositionIndex != index) ...{
-                                SizedBox(height: rSize*0.005,),
-                                AppWidgets.portfolioListElement('Allocation', '100%', middleValue: '100,000,000.00'),
-                                AppWidgets.portfolioListElement('ROI', '-')
-                              },
-                            if (_notifier.selectedPositionIndex == index) ...{
-                              ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxHeight: rSize * 0.5,
-                                ),
-                                child: ListView(
-                                  shrinkWrap: true,
+                                Row(
                                   children: [
+                                    Expanded(
+                                        child: Text(
+                                          item.referenceCurrency??'N/A',
+                                          style: AppStyles.c656262W500S16,
+                                        )),
                                     SizedBox(
-                                      height: rSize * 0.01,
+                                      width: rSize * 0.015,
                                     ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: AppColors.kViolate.withOpacity(0.2),
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      padding: EdgeInsets.all(rSize * 0.015),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          AppWidgets.portfolioListElement('Name', 'CHF'),
-                                          SizedBox(
-                                            height: rSize * 0.005,
-                                          ),
-                                          AppWidgets.portfolioListElement('ISIN', 'CHF'),
-                                          SizedBox(
-                                            height: rSize * 0.005,
-                                          ),
-                                          AppWidgets.portfolioListElement('Currency', 'CHF'),
-                                          SizedBox(
-                                            height: rSize * 0.005,
-                                          ),
-                                          AppWidgets.portfolioListElement('Last Price', '1.00'),
-                                          SizedBox(
-                                            height: rSize * 0.005,
-                                          ),
-                                          AppWidgets.portfolioListElement('Cost Price', '0'),
-                                          SizedBox(
-                                            height: rSize * 0.005,
-                                          ),
-                                          AppWidgets.portfolioListElement('ROI', '-'),
-                                          SizedBox(
-                                            height: rSize * 0.005,
-                                          ),
-                                          AppWidgets.portfolioListElement('Quality', '100,000,000.00'),
-                                          SizedBox(
-                                            height: rSize * 0.005,
-                                          ),
-                                          AppWidgets.portfolioListElement('FX Rate', '1.00000'),
-                                          SizedBox(
-                                            height: rSize * 0.005,
-                                          ),
-                                          AppWidgets.portfolioListElement('Amount', '100,000,000.00'),
-                                          SizedBox(
-                                            height: rSize * 0.005,
-                                          ),
-                                          AppWidgets.portfolioListElement('Allocation', '100%'),
-                                          SizedBox(
-                                            height: rSize * 0.015,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                    RotatedBox(
+                                        quarterTurns: _notifier.selectedPositionIndex == index ? 1 : 3,
+                                        child: Icon(
+                                          Icons.arrow_back_ios_new,
+                                          color: AppColors.kTextFieldInput,
+                                          size: 15,
+                                        )),
+
                                   ],
                                 ),
-                              ),
-                            }
-                          ],
-                        ),
+                                if (_notifier.selectedPositionIndex != index) ...{
+                                  SizedBox(height: rSize*0.005,),
+                                  AppWidgets.portfolioListElement('Allocation', item.allocation??'N/A', middleValue: ''),
+                                  AppWidgets.portfolioListElement('ROI', item.roi!)
+                                },
+                                if (_notifier.selectedPositionIndex == index) ...{
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxHeight: rSize * 0.5,
+                                    ),
+                                    child: ListView(
+                                      shrinkWrap: true,
+                                      children: [
+                                        SizedBox(
+                                          height: rSize * 0.01,
+                                        ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: AppColors.kViolate.withOpacity(0.2),
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                          padding: EdgeInsets.all(rSize * 0.015),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              AppWidgets.portfolioListElement('Name', item.securityName??'N/A'),
+                                              SizedBox(
+                                                height: rSize * 0.005,
+                                              ),
+                                              AppWidgets.portfolioListElement('ISIN', item.securityIsin??'N/A'),
+                                              SizedBox(
+                                                height: rSize * 0.005,
+                                              ),
+                                              AppWidgets.portfolioListElement('Currency', item.referenceCurrency??'N/A'),
+                                              SizedBox(
+                                                height: rSize * 0.005,
+                                              ),
+                                              AppWidgets.portfolioListElement('Last Price', item.lastPrice??'N/A'),
+                                              SizedBox(
+                                                height: rSize * 0.005,
+                                              ),
+                                              AppWidgets.portfolioListElement('Cost Price', item.costPrice??'N/A'),
+                                              SizedBox(
+                                                height: rSize * 0.005,
+                                              ),
+                                              AppWidgets.portfolioListElement('ROI', item.roi??'N/A'),
+                                              SizedBox(
+                                                height: rSize * 0.005,
+                                              ),
+                                              AppWidgets.portfolioListElement('Quality', item.quantity??'N/A'),
+                                              SizedBox(
+                                                height: rSize * 0.005,
+                                              ),
+                                              AppWidgets.portfolioListElement('FX Rate', item.fxRate??'N/A'),
+                                              SizedBox(
+                                                height: rSize * 0.005,
+                                              ),
+                                              AppWidgets.portfolioListElement('Amount', item.amount??'N/A'),
+                                              SizedBox(
+                                                height: rSize * 0.005,
+                                              ),
+                                              AppWidgets.portfolioListElement('Allocation', item.allocation??'N/A'),
+                                              SizedBox(
+                                                height: rSize * 0.015,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                }
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                );
-              },),
+                    );
+                  }),
+                ),
+              ),
             )
           ],
         ),

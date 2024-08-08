@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:intl/intl.dart';
+import 'dart:math' as math;
 
 class CommonFunctions{
 
@@ -80,7 +81,28 @@ class CommonFunctions{
     }
   }
 
+  static bool compare(String searchedWord,String text){
+    return text.toLowerCase().replaceAll(' ', '').contains(searchedWord.toLowerCase().replaceAll(' ', ''));
+  }
+
   static String getYYYYMMDD(DateTime date){
     return DateFormat('yyyy-MM-dd').format(date);
+  }
+
+  static String formatDoubleWithThousandSeperator(
+      String doubleStr,
+      bool hideDecimalIfIs0,
+      int numberOfDecimal,
+      ) {
+    final value = double.tryParse(doubleStr.replaceAll(',', '')) ?? 0;
+    if (value != 0 && value ~/ math.pow(10, 15) > 0) {
+      return value.toStringAsPrecision(15);
+    }
+    String decimalStr = '';
+    for (var i = 0; i < numberOfDecimal; i++) {
+      decimalStr += (hideDecimalIfIs0 ? '#' : '0');
+    }
+    NumberFormat formatter = NumberFormat('#,##0.${decimalStr}', 'en_US');
+    return formatter.format(value);
   }
 }

@@ -101,9 +101,9 @@ class _LoginState extends State<Login> {
                         InkWell(
                             onTap: () async {
                               FocusManager.instance.primaryFocus?.unfocus();
-                              // if(_formKey.currentState!.validate()){
+                              if(_formKey.currentState!.validate()){
                                 _controller.doLogin(context);
-                              // }
+                              }
                             },
                             child: AppWidgets.btn('Login')),
                         SizedBox(

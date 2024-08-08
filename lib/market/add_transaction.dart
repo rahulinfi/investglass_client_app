@@ -26,7 +26,7 @@ class _AddTransactionState extends State<AddTransaction> {
           children: [
             DropdownSearch<String>(
               popupProps: PopupProps.menu(
-                showSelectedItems: true,
+                // showSelectedItems: true,
                 showSearchBox: true,
                 searchDelay: Duration.zero,
               ),
@@ -35,7 +35,7 @@ class _AddTransactionState extends State<AddTransaction> {
                 dropdownSearchDecoration: AppStyles.dropDownInputDecoration(AppWidgets.textFieldLabel('Portfolio')),
               ),
               onChanged: print,
-              selectedItem: "All",
+              selectedItem:null,
             ),
             SizedBox(height: rSize*0.015,),
             TextFormField(
@@ -45,7 +45,7 @@ class _AddTransactionState extends State<AddTransaction> {
             SizedBox(height: rSize*0.015,),
             DropdownSearch<String>(
               popupProps: PopupProps.menu(
-                showSelectedItems: true,
+                // showSelectedItems: true,
                 showSearchBox: true,
                 searchDelay: Duration.zero,constraints:BoxConstraints(maxHeight: rSize*0.3)
               ),
@@ -54,7 +54,7 @@ class _AddTransactionState extends State<AddTransaction> {
                 dropdownSearchDecoration: AppStyles.dropDownInputDecoration(AppWidgets.textFieldLabel('Type')),
               ),
               onChanged: print,
-              selectedItem: "All",
+              selectedItem: null,
             ),
             SizedBox(height: rSize*0.015,),
             TextFormField(

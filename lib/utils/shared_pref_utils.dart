@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'package:kleber_bank/login/user_info_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const TOKEN = "token";
+const USER_DATA = "user_data";
 
 class SharedPrefUtils {
   final SharedPreferences prefs;
@@ -66,45 +68,19 @@ class SharedPrefUtils {
     return defaultValue;
   }
 
-  /*static List<LocalUserDetails> getLocalUserData() {
-    List<LocalUserDetails> data = [];
-    final localData = SharedPrefUtils.instance.getString(USER_DATA_STRING);
-    if (localData.isNotEmpty) {
-      final decodedData = json.decode(localData);
-      data = List<LocalUserDetails>.from(
-        decodedData.map((x) => LocalUserDetails.fromJson(x)),
-      );
-    }
-    return data;
+  UserInfotModel getUserData() {
+    final localData = SharedPrefUtils.instance.getString(USER_DATA);
+    Map<String, dynamic> json=jsonDecode(localData);
+    return UserInfotModel.fromJson(json);
   }
 
-  static void setLocalUserData(List<LocalUserDetails> userDetails, {bool doSubscribe = true}) async {
-    SharedPrefUtils.instance.putString(
-      USER_DATA_STRING,
-      jsonEncode(
-        userDetails.map((e) => e.toJson()).toList(),
-      ),
-    );
+  static void storeUserData(UserInfotModel userDetails) async {
 
-    if (doSubscribe) {
-      List<LocalUserDetails> userDetails2 =
-          userDetails.where((element) => element.userId == SharedPrefUtils.instance.getString(USER_ID_STRING)).toList();
-      if (userDetails2.isNotEmpty) {
-        LocalUserDetails details = userDetails2.first;
-        Constants.subscribeTopic(Constants.orderTopic, details.isOrderNotificationEnabled!);
-        Constants.subscribeTopic(Constants.newsTopic, details.isNewsNotificationEnabled!);
-        Constants.subscribeTopic(Constants.marketTopic, details.isMarketNotificationEnabled!);
-      }
-    }
-  }*/
+  }
 
-  /*Future<bool> logout() async {
-    await prefs.remove(USER_ID_STRING);
-    await prefs.remove(USER_NAME_STRING);
-    await prefs.remove(USER_REGISTRATION_TOKEN_STRING);
-    await prefs.remove(IS_LOGGED_IN_BOOL);
-    await prefs.remove(USER_TOKEN_STRING);
-    await prefs.remove(OPTION_CHAIN_COUNT_INT);
+  Future<bool> logout() async {
+    await prefs.remove(TOKEN);
+    await prefs.remove(USER_DATA);
     return true;
-  }*/
+  }
 }

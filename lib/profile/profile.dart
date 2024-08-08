@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kleber_bank/login/login.dart';
 import 'package:kleber_bank/main.dart';
 import 'package:kleber_bank/profile/change_password.dart';
 import 'package:kleber_bank/profile/profile_controller.dart';
@@ -6,6 +7,7 @@ import 'package:kleber_bank/utils/app_colors.dart';
 import 'package:kleber_bank/utils/app_styles.dart';
 import 'package:kleber_bank/utils/app_widgets.dart';
 import 'package:kleber_bank/utils/common_functions.dart';
+import 'package:kleber_bank/utils/shared_pref_utils.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
@@ -56,7 +58,12 @@ class _ProfileState extends State<Profile> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AppWidgets.btn('Log out',horizontalPadding: rSize*0.03),
+                GestureDetector(
+                    onTap: () async {
+                      await SharedPrefUtils.instance.logout();
+                      CommonFunctions.navigate(context, Login(),removeAllScreensFromStack: true);
+                    },
+                    child: AppWidgets.btn('Log out',horizontalPadding: rSize*0.03)),
               ],
             ),
           ],

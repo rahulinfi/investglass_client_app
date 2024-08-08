@@ -6,6 +6,7 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 // import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../main.dart';
+import '../portfolio/portfolio_model.dart';
 import 'app_colors.dart';
 import 'app_styles.dart';
 import 'common_functions.dart';
@@ -28,6 +29,81 @@ class AppWidgets {
       label,
       textAlign: TextAlign.start,
       style: AppStyles.c656262W500S18,
+    );
+  }
+
+  static Container healthAlertElement(
+      String title, Color bgColor, IconData iconData, String label, Appropriateness model) {
+    return Container(
+      decoration: BoxDecoration(color: bgColor.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+      padding: EdgeInsets.symmetric(horizontal: rSize * 0.02, vertical: rSize * 0.015),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                iconData,
+                color: bgColor,
+                size: 20,
+              ),
+              Expanded(
+                  child: Text(
+                title,
+                style: AppStyles.c656262W400S16.copyWith(color: bgColor),
+              )),
+              Text(
+                 model.listDetails!.length.toString(),
+                style: AppStyles.c656262W400S16.copyWith(color: bgColor),
+              )
+            ],
+          ),
+          if (label.isNotEmpty) ...{
+            SizedBox(
+              height: rSize * 0.01,
+            ),
+            Text(
+              label,
+              style: AppStyles.c656262W500S14,
+            ),
+            Text(
+              getStatus(model.status),
+              style: AppStyles.c656262W200S14,
+            ),
+            SizedBox(
+              height: rSize * 0.01,
+            ),
+            ListView.separated(
+              shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) => Row(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.kTextFieldInput,
+                      ),
+                      height: 8,
+                      width: 8,
+                    ),
+                    SizedBox(width: rSize*0.015,),
+                    Expanded(
+                      child: Text(
+                        model.listDetails![index],
+                        style: AppStyles.c656262W200S14,
+                      ),
+                    ),
+                  ],
+                ),
+                separatorBuilder: (context, index) => Container(
+                  height: 0.2,
+                  margin: EdgeInsets.symmetric(vertical: rSize*0.01),
+                  color: AppColors.kHint,
+                ),
+                itemCount: model.listDetails!.length)
+          }
+        ],
+      ),
     );
   }
 
@@ -76,6 +152,7 @@ class AppWidgets {
           )
         },
         if (middleValue.isEmpty) ...{
+          SizedBox(width: rSize*0.015,),
           Expanded(
             child: Text(
               value,
@@ -371,21 +448,29 @@ class AppWidgets {
                     color: Colors.white,
                     child: Column(
                       children: [
-                        SizedBox(height: rSize*0.02,),
+                        SizedBox(
+                          height: rSize * 0.02,
+                        ),
                         Text(
                           msg,
                           style: AppStyles.c3C496CW500S18,
                         ),
-                        SizedBox(height: rSize*0.02,),
+                        SizedBox(
+                          height: rSize * 0.02,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             GestureDetector(onTap: onTap1, child: btn(label1, borderOnly: true, horizontalPadding: rSize * 0.02)),
-                            SizedBox(width: rSize*0.02,),
+                            SizedBox(
+                              width: rSize * 0.02,
+                            ),
                             GestureDetector(onTap: onTap2, child: btn(label2, horizontalPadding: rSize * 0.02)),
                           ],
                         ),
-                        SizedBox(height: rSize*0.02,)
+                        SizedBox(
+                          height: rSize * 0.02,
+                        )
                       ],
                     ),
                   ),
@@ -419,5 +504,16 @@ class AppWidgets {
         ),
       ),
     );
+  }
+
+  static String getStatus(String? status) {
+    if(status=='-'){
+      return 'Not checked';
+    }else if(status=='true'){
+      return 'No issues have been detected';
+    }else if(status=='false'){
+      return 'The following investment are not in line with your financial knowledge';
+    }
+    return '';
   }
 }

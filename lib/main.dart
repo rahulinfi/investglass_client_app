@@ -1,9 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:kleber_bank/dashboard/dashboard.dart';
 import 'package:kleber_bank/dashboard/dashboard_controller.dart';
 import 'package:kleber_bank/login/login.dart';
 import 'package:kleber_bank/portfolio/portfolio_controller.dart';
+import 'package:kleber_bank/portfolio/positions.dart';
+import 'package:kleber_bank/portfolio/transactions.dart';
 import 'package:kleber_bank/profile/profile_controller.dart';
 import 'package:kleber_bank/proposals/proposal_controller.dart';
 import 'package:kleber_bank/utils/app_colors.dart';
@@ -63,10 +66,20 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
+        popupMenuTheme: PopupMenuThemeData(
+          color: Colors.white, // Background color of the menu
+surfaceTintColor: Colors.white,
+
+          textStyle: TextStyle(color: Colors.white), // Text color in menu items
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          // Optionally add other styles like elevation, padding, etc.
+        ),
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.bg),
         useMaterial3: true,
       ),
-      home: Login(),
+      home: SharedPrefUtils.instance.getString(TOKEN).isEmpty?Login():Transactions(),
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:kleber_bank/portfolio/portfolio_model.dart';
+import 'package:kleber_bank/utils/api_calls.dart';
 
 class PortfolioController extends ChangeNotifier{
   int selectedIndex=-1;
@@ -38,5 +40,9 @@ class PortfolioController extends ChangeNotifier{
   void selectPositionFilter(String value) {
     selectedPositionFilter=value;
     notifyListeners();
+  }
+
+  Future<List<PortfolioModel>> getPortfolioList(int pageKey) async {
+    return await ApiCalls.getPortfolioList(pageKey);
   }
 }
