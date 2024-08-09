@@ -20,25 +20,26 @@ class Positions extends StatefulWidget {
 
 class _PositionsState extends State<Positions> {
   late PortfolioController _notifier;
-  final PagingController<int, PositionModel> pagingController = PagingController(firstPageKey: 1);
-  int pageKey=1;
+  final PagingController<int, PositionModel> _pagingController = PagingController(firstPageKey: 1);
+  int _pageKey=1;
 
   @override
   void initState() {
-    pagingController.addPageRequestListener((pageKey) {
+    _pagingController.addPageRequestListener((pageKey) {
       _fetchPageActivity();
     });
     super.initState();
   }
 
   Future<void> _fetchPageActivity() async {
-    List<PositionModel> list=await ApiCalls.getPositionList(pageKey,/*widget.id*/17711);
+    var notifier = Provider.of<PortfolioController>(context,listen: false);
+    List<PositionModel> list=await ApiCalls.getPositionList(_pageKey,widget.id,notifier.column,notifier.direction);
     final isLastPage = list.length < 10;
     if (isLastPage) {
-      pagingController.appendLastPage(list);
+      _pagingController.appendLastPage(list);
     } else {
-      pageKey++;
-      pagingController.appendPage(list, pageKey);
+      _pageKey++;
+      _pagingController.appendPage(list, _pageKey);
     }
   }
   @override
@@ -59,6 +60,8 @@ class _PositionsState extends State<Positions> {
                 value: _notifier.selectedPositionFilter,
                 onChanged: (value) {
                   _notifier.selectPositionFilter(value!);
+                  _pageKey=1;
+                  _pagingController.refresh();
                 },
                 items: _notifier.positionsFilterTypeList
                     .map(
@@ -71,11 +74,11 @@ class _PositionsState extends State<Positions> {
               child:
               RefreshIndicator(
                 onRefresh: () async {
-                  pageKey = 1;
-                  pagingController.refresh();
+                  _pageKey = 1;
+                  _pagingController.refresh();
                 },
                 child: PagedListView<int, PositionModel>(
-                  pagingController: pagingController,
+                  pagingController: _pagingController,
                   // shrinkWrap: true,
                   builderDelegate: PagedChildBuilderDelegate<PositionModel>(noItemsFoundIndicatorBuilder: (context) {
                     return const SizedBox();
@@ -130,10 +133,10 @@ class _PositionsState extends State<Positions> {
                                         ),
                                         Container(
                                           decoration: BoxDecoration(
-                                            color: AppColors.kViolate.withOpacity(0.2),
+                                            // color: AppColors.kViolate.withOpacity(0.2),
                                             borderRadius: BorderRadius.circular(15),
                                           ),
-                                          padding: EdgeInsets.all(rSize * 0.015),
+                                          // padding: EdgeInsets.all(rSize * 0.015),
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [

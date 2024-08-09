@@ -1,11 +1,14 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:kleber_bank/documents/document_model.dart';
 import 'package:kleber_bank/documents/documents_controller.dart';
 import 'package:kleber_bank/documents/upload_document.dart';
+import 'package:kleber_bank/utils/api_calls.dart';
 import 'package:kleber_bank/utils/app_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-
+import 'package:intl/intl.dart';
 import '../main.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_styles.dart';
@@ -20,6 +23,31 @@ class Documents extends StatefulWidget {
 
 class _DocumentsState extends State<Documents> {
   late DocumentsController _notifier;
+
+  final PagingController<int, Document> pagingController = PagingController(firstPageKey: 1);
+  int pageKey=1;
+
+  @override
+  void initState() {
+    pagingController.addPageRequestListener((pageKey) {
+      _fetchPageActivity();
+    });
+    super.initState();
+  }
+
+  Future<void> _fetchPageActivity() async {
+    await ApiCalls.getDocumentList(pageKey).then((value) {
+      List<Document> list=value?.folders??[];
+      final isLastPage = list.length < 10;
+      if (isLastPage) {
+        pagingController.appendLastPage(list);
+      } else {
+        pageKey++;
+        pagingController.appendPage(list, pageKey);
+      }
+    },);
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,69 +91,79 @@ class _DocumentsState extends State<Documents> {
             child: Card(
               margin: EdgeInsets.symmetric(horizontal: rSize * 0.015),
               color: Colors.white,
-              child: ListView.builder(
-                itemCount: 8,
-                shrinkWrap: true,
-                padding: EdgeInsets.all(rSize * 0.015),
-                itemBuilder: (context, index) {
-                  return Container(
-                    decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.kHint, width: 0.3))),
-                    padding: EdgeInsets.symmetric(vertical: rSize * 0.01),
-                    child: Row(children: [
-                      Container(
-                          padding: EdgeInsets.all(rSize * 0.01),
-                          decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(Radius.circular(20)),
-                              border: Border.all(color: AppColors.kTextFieldInput, width: 0.2)),
-                          child: Image.asset(
-                            'assets/doc.png',
-                            color: AppColors.kTextFieldInput,
-                            scale: 30,
-                          )),
-                      SizedBox(
-                        width: rSize * 0.01,
-                      ),
-                      Expanded(
-                          child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '250165 CRS Status Declaration Form for Account Holder ssss dddddd ',
-                            style: AppStyles.c656262W500S16,
-                            maxLines: 2,
-                          ),
-                          Text(
-                            '2024-07-31 10:55',
-                            style: AppStyles.c656262W200S14,
-                            maxLines: 2,
-                          ),
-                          if (index == 3) ...{
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  pageKey = 1;
+                  pagingController.refresh();
+                },
+                child: PagedListView<int, Document>(
+                  pagingController: pagingController,
+                  // shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(horizontal: rSize * 0.015),
+                  builderDelegate: PagedChildBuilderDelegate<Document>(noItemsFoundIndicatorBuilder: (context) {
+                    return const SizedBox();
+                  }, itemBuilder: (context, item, index) {
+                    return Container(
+                      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.kHint, width: 0.3))),
+                      padding: EdgeInsets.symmetric(vertical: rSize * 0.01),
+                      child: Row(children: [
+                        Container(
+                            padding: EdgeInsets.all(rSize * 0.01),
+                            decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                border: Border.all(color: AppColors.kTextFieldInput, width: 0.2)),
+                            child: Image.asset(
+                              item.documentType==null?'assets/folder.png':'assets/doc.png',
+                              color: AppColors.kTextFieldInput,
+                              scale: 30,
+                            )),
+                        SizedBox(
+                          width: rSize * 0.01,
+                        ),
+                        Expanded(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Text(
-                              'Accepted at 2024-07-31 10:55',
-                              style: AppStyles.c656262W400S16.copyWith(color: Colors.green),
+                              item.folderName??'',
+                              style: AppStyles.c656262W500S16,
                               maxLines: 2,
-                            )
-                          },
-                          if (index == 5) ...{
+                            ),
                             Text(
-                              'Rejected at 2024-07-31 10:55',
-                              style: AppStyles.c656262W400S16.copyWith(color: Colors.red),
+                              DateFormat('yyyy-MM-dd HH:mm').format(item.updatedAt!),
+                              style: AppStyles.c656262W200S14,
                               maxLines: 2,
-                            )
-                          },
-                        ],
-                      )),
-                      popupMenu(),
-                      /*const RotatedBox(
+                            ),
+                            if (item.documentStatus=='Accepted') ...{
+                              Text(
+                                'Accepted at ${DateFormat('yyyy-MM-dd HH:mm').format(item.disapprovedAt!)}',
+                                style: AppStyles.c656262W400S16.copyWith(color: Colors.green),
+                                maxLines: 2,
+                              )
+                            },
+                            if (item.documentStatus=='Rejected') ...{
+                              Text(
+                                'Rejected at ${DateFormat('yyyy-MM-dd HH:mm').format(item.disapprovedAt!)}',
+                                style: AppStyles.c656262W400S16.copyWith(color: Colors.red),
+                                maxLines: 2,
+                              )
+                            },
+                          ],
+                        )),
+                        if(item.documentType!=null)...{
+                        popupMenu(),
+                        }
+                        /*const RotatedBox(
                           quarterTurns: 2,
                           child: Icon(
                             Icons.arrow_back_ios,
                             color: AppColors.kTextFieldInput,
                             size: 15,
                           ))*/
-                    ]),
-                  );
-                },
+                      ]),
+                    );
+                  }),
+                ),
               ),
             ),
           )
@@ -378,17 +416,21 @@ class _DocumentsState extends State<Documents> {
   popupMenu() {
     return PopupMenuButton<int>(
       child: Icon(Icons.more_vert),
-      padding: EdgeInsets.zero,surfaceTintColor: Colors.white,
+      padding: EdgeInsets.zero,
+      surfaceTintColor: Colors.white,
       position: PopupMenuPosition.under,
       itemBuilder: (context) => [
-        popupMenuItem(1,'View',Icons.remove_red_eye,(){}),
-        popupMenuItem(2,'Download',Icons.download,(){}),
-        popupMenuItem(3,'Signature',Icons.edit,(){
-          AppWidgets.showAlert(context, 'Please Confirm your action', 'Reject', 'Accept', () {
-
-          }, () {
-
-          },);
+        popupMenuItem(1, 'View', Icons.remove_red_eye, () {}),
+        popupMenuItem(2, 'Download', Icons.download, () {}),
+        popupMenuItem(3, 'Signature', Icons.edit, () {
+          AppWidgets.showAlert(
+            context,
+            'Please Confirm your action',
+            'Reject',
+            'Accept',
+            () {},
+            () {},
+          );
         }),
       ],
       offset: Offset(0, 0),
@@ -396,20 +438,20 @@ class _DocumentsState extends State<Documents> {
     );
   }
 
-  PopupMenuItem<int> popupMenuItem(int value,String label, IconData iconData, void Function()? onTap) {
+  PopupMenuItem<int> popupMenuItem(int value, String label, IconData iconData, void Function()? onTap) {
     return PopupMenuItem(
-        value: value,onTap:onTap ,
-        // row has two child icon and text.
-        child: Row(
-          children: [
-            Icon(iconData),
-            SizedBox(
-              // sized box with width 10
-              width: 10,
-            ),
-            Text(label)
-          ],
-        ),
-      );
+      value: value, onTap: onTap,
+      // row has two child icon and text.
+      child: Row(
+        children: [
+          Icon(iconData),
+          SizedBox(
+            // sized box with width 10
+            width: 10,
+          ),
+          Text(label)
+        ],
+      ),
+    );
   }
 }

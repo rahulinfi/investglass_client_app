@@ -170,13 +170,13 @@ class AppWidgets {
     );
   }
 
-  static Widget btn(String label, {double? width, double horizontalPadding = 0, Widget? widget, bool borderOnly = false, Color? bgColor}) {
+  static Widget btn(String label, {double? width, double horizontalPadding = 0,double? verticalPadding, Widget? widget, bool borderOnly = false, Color? bgColor}) {
     return Container(
       width: width,
       alignment: Alignment.center,
       decoration: gradiantDecoration(borderOnly: borderOnly, color: bgColor),
-      padding: EdgeInsets.symmetric(vertical: rSize * 0.012, horizontal: horizontalPadding),
-      child: Text(
+      padding: EdgeInsets.symmetric(vertical: verticalPadding??rSize * 0.012, horizontal: horizontalPadding),
+      child: widget??Text(
         label,
         style: borderOnly ? AppStyles.c3C496CW500S18 : AppStyles.cFFFFFFW400S18.copyWith(fontWeight: FontWeight.w500),
       ),

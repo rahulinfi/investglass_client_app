@@ -291,31 +291,30 @@ class _PortfolioState extends State<Portfolio> {
                                     height: rSize * 0.015,
                                   ),
                                   AppWidgets.healthAlertElement('   Major Issues',  Colors.red, Icons.report_problem_outlined,'',item.appropriateness!),
-                                  SizedBox(
-                                    height: rSize * 0.02,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Expanded(child: GestureDetector(
-                                          onTap: () {
-                                            CommonFunctions.navigate(context, Positions(item.id!));
-                                          },
-                                          child: AppWidgets.btn('Positions'))),
-                                      SizedBox(
-                                        width: rSize * 0.01,
-                                      ),
-                                      Expanded(child: GestureDetector(
-                                          onTap: () => CommonFunctions.navigate(context, Transactions()),
-                                          child: AppWidgets.btn('Transactions'))),
-                                    ],
-                                  )
                                 ],
                               ),
                             ),
                           ],
                         ),
                       ),
-                    }
+                    },SizedBox(
+                      height: rSize * 0.01,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(child: GestureDetector(
+                            onTap: () {
+                              CommonFunctions.navigate(context, Positions(item.id!));
+                            },
+                            child: AppWidgets.btn('Positions',verticalPadding: rSize*0.005))),
+                        SizedBox(
+                          width: rSize * 0.01,
+                        ),
+                        Expanded(child: GestureDetector(
+                            onTap: () => CommonFunctions.navigate(context, Transactions(item.title!)),
+                            child: AppWidgets.btn('Transactions',verticalPadding: rSize*0.005))),
+                      ],
+                    )
                   ],
                 ),
               ),

@@ -79,7 +79,7 @@ surfaceTintColor: Colors.white,
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.bg),
         useMaterial3: true,
       ),
-      home: SharedPrefUtils.instance.getString(TOKEN).isEmpty?Login():Transactions(),
+      home: SharedPrefUtils.instance.getString(TOKEN).isEmpty?Login():Dashboard(),
     );
   }
 }

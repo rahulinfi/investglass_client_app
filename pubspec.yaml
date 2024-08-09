@@ -52,6 +52,7 @@ dependencies:
   webview_flutter_plus:
   flutter_html:
   qr_flutter:
+  syncfusion_flutter_pdfviewer: ^26.2.7
 
 dev_dependencies:
   flutter_test:

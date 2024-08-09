@@ -3,15 +3,17 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:kleber_bank/portfolio/portfolio_controller.dart';
 import 'package:kleber_bank/portfolio/transaction_model.dart';
 import 'package:kleber_bank/utils/app_widgets.dart';
+import 'package:kleber_bank/utils/common_functions.dart';
 import 'package:provider/provider.dart';
-
+import 'package:intl/intl.dart';
 import '../main.dart';
 import '../utils/api_calls.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_styles.dart';
 
 class Transactions extends StatefulWidget {
-  const Transactions({super.key});
+  final String portfolioName;
+  const Transactions(this.portfolioName,{super.key});
 
   @override
   State<Transactions> createState() => _TransactionsState();
@@ -31,7 +33,7 @@ class _TransactionsState extends State<Transactions> {
   }
 
   Future<void> _fetchPageActivity() async {
-    List<TransactionModel> list=await ApiCalls.getTransactionList(pageKey,'GERE PAR LA BANQUE 1');
+    List<TransactionModel> list=await ApiCalls.getTransactionList(pageKey,widget.portfolioName);
     final isLastPage = list.length < 10;
     if (isLastPage) {
       pagingController.appendLastPage(list);
@@ -44,7 +46,7 @@ class _TransactionsState extends State<Transactions> {
   Widget build(BuildContext context) {
     _notifier = Provider.of<PortfolioController>(context);
     return Scaffold(
-      appBar: AppWidgets.appBar('Transactions of 2024-08-02'),
+      appBar: AppWidgets.appBar('Transaction as of ${DateFormat('yyyy-MM-dd').format(DateTime.now())}'),
       body:
       RefreshIndicator(
         onRefresh: () async {
@@ -108,10 +110,10 @@ class _TransactionsState extends State<Transactions> {
                                 ),
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: AppColors.kViolate.withOpacity(0.2),
+                                    // color: AppColors.kViolate.withOpacity(0.2),
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  padding: EdgeInsets.all(rSize * 0.015),
+                                  // padding: EdgeInsets.all(rSize * 0.015),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -123,7 +125,7 @@ class _TransactionsState extends State<Transactions> {
                                       SizedBox(
                                         height: rSize * 0.005,
                                       ),
-                                      AppWidgets.portfolioListElement('Security Name','NEED TO SET'/* item.portfolioSecurity.name*/),
+                                      AppWidgets.portfolioListElement('Security Name', item.portfolioSecurity?.securityName??''),
                                       SizedBox(
                                         height: rSize * 0.005,
                                       ),
@@ -131,7 +133,7 @@ class _TransactionsState extends State<Transactions> {
                                       SizedBox(
                                         height: rSize * 0.005,
                                       ),
-                                      AppWidgets.portfolioListElement('Price', 'NEED TO SET'),
+                                      AppWidgets.portfolioListElement('Price',item.portfolioSecurity!.referenceCurrency!+' '+ CommonFunctions.formatDoubleWithThousandSeperator('${item.openPrice!}',item.openPrice==0,2)),
                                       SizedBox(
                                         height: rSize * 0.005,
                                       ),

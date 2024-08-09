@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class TransactionModel {
   int? id;
-  String? openPrice;
+  double? openPrice;
   String? openRate;
   String? quantity;
   String? amount;
@@ -39,7 +39,7 @@ class TransactionModel {
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) => TransactionModel(
     id: json["id"],
-    openPrice: json["open_price"],
+    openPrice: double.tryParse(json["open_price"]?.toString()??'0')??0.0,
     openRate: json["open_rate"],
     quantity: json["quantity"],
     amount: json["amount"],
