@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:kleber_bank/login/user_info_model.dart';
 import 'package:kleber_bank/market/market_list_model.dart';
 import 'package:kleber_bank/portfolio/portfolio_model.dart';
@@ -381,6 +382,87 @@ class ApiCalls {
       print("response ${response.body}");
 
       return DocumentModel.fromJson(jsonDecode(response.body));
+    } on SocketException catch (e) {
+      CommonFunctions.showToast(AppConst.connectionError);
+    } on TimeoutException catch (e) {
+      CommonFunctions.showToast(AppConst.connectionTimeOut);
+    } on Error catch (e) {
+      CommonFunctions.showToast(AppConst.somethingWentWrong);
+      print('user info API error ${e.toString()}::: ${e.stackTrace}');
+    }
+    return null;
+  }
+
+  static Future<bool> changePassword(String currentPwd, String newPwd) async {
+    try {
+      var url = Uri.parse(
+        EndPoints.changePassword,
+      );
+
+      var response = await http.post(url, headers: {'Authorization': 'Bearer ${SharedPrefUtils.instance.getString(TOKEN)}'},body:
+        {
+          "current_password": currentPwd,
+          "new_password": newPwd
+        }
+      );
+      print("url $url");
+      print("response ${response.body}");
+      if (jsonDecode(response.body).containsKey('errors')) {
+        CommonFunctions.showToast(jsonDecode(response.body)['errors']);
+        return false;
+      }else{
+        return jsonDecode(response.body)['success'];
+      }
+    } on SocketException catch (e) {
+      CommonFunctions.showToast(AppConst.connectionError);
+    } on TimeoutException catch (e) {
+      CommonFunctions.showToast(AppConst.connectionTimeOut);
+    } on Error catch (e) {
+      CommonFunctions.showToast(AppConst.somethingWentWrong);
+      print('user info API error ${e.toString()}::: ${e.stackTrace}');
+    }
+    return false;
+  }
+
+  static Future<Map<String,dynamic>?> uploadDoc(XFile file,String desc) async {
+    var url = Uri.parse(EndPoints.documents);
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll({'Authorization': 'Bearer ${SharedPrefUtils.instance.getString(TOKEN)}'});
+    var multipartFile = await http.MultipartFile('document[file]', http.ByteStream(file.openRead()),await file.length(),filename: file.name);
+    request.files.add(multipartFile);
+    request.fields['document[description]'] = desc;
+
+    try {
+      var response = await request.send();
+
+      String jsonData = await response.stream.transform(utf8.decoder).join();
+      Map<String, dynamic> valueMap = json.decode(jsonData);
+      print("valueMap ${valueMap.toString()}");
+      return valueMap;
+
+    } on SocketException catch (e) {
+      CommonFunctions.showToast(AppConst.connectionError);
+    } on TimeoutException catch (e) {
+      CommonFunctions.showToast(AppConst.connectionTimeOut);
+    } on Error catch (e) {
+      CommonFunctions.showToast(AppConst.somethingWentWrong);
+      print('user info API error ${e.toString()}::: ${e.stackTrace}');
+    }
+    return null;
+  }
+
+  static Future<Document?> updateDocumentStatus(int id,String status) async {
+    try {
+      var url = Uri.parse(
+        '${EndPoints.documents}/$id/update_status?$status',
+      );
+
+      var response = await http.put(url, headers: {'Authorization': 'Bearer ${SharedPrefUtils.instance.getString(TOKEN)}'},);
+      print("url $url");
+      print("response ${response.body}");
+
+        return Document.fromJson(jsonDecode(response.body));
+
     } on SocketException catch (e) {
       CommonFunctions.showToast(AppConst.connectionError);
     } on TimeoutException catch (e) {

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -10,9 +12,12 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart';
 import '../main.dart';
+import '../proposals/view_document.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_styles.dart';
 import '../utils/common_functions.dart';
+import '../utils/end_points.dart';
+import '../utils/shared_pref_utils.dart';
 
 class Documents extends StatefulWidget {
   const Documents({super.key});
@@ -25,7 +30,7 @@ class _DocumentsState extends State<Documents> {
   late DocumentsController _notifier;
 
   final PagingController<int, Document> pagingController = PagingController(firstPageKey: 1);
-  int pageKey=1;
+  int pageKey = 1;
 
   @override
   void initState() {
@@ -36,17 +41,18 @@ class _DocumentsState extends State<Documents> {
   }
 
   Future<void> _fetchPageActivity() async {
-    await ApiCalls.getDocumentList(pageKey).then((value) {
-      List<Document> list=value?.folders??[];
-      final isLastPage = list.length < 10;
-      if (isLastPage) {
-        pagingController.appendLastPage(list);
-      } else {
-        pageKey++;
-        pagingController.appendPage(list, pageKey);
-      }
-    },);
-
+    await ApiCalls.getDocumentList(pageKey).then(
+      (value) {
+        List<Document> list = value?.folders ?? [];
+        final isLastPage = list.length < 10;
+        if (isLastPage) {
+          pagingController.appendLastPage(list);
+        } else {
+          pageKey++;
+          pagingController.appendPage(list, pageKey);
+        }
+      },
+    );
   }
 
   @override
@@ -113,7 +119,7 @@ class _DocumentsState extends State<Documents> {
                                 borderRadius: const BorderRadius.all(Radius.circular(20)),
                                 border: Border.all(color: AppColors.kTextFieldInput, width: 0.2)),
                             child: Image.asset(
-                              item.documentType==null?'assets/folder.png':'assets/doc.png',
+                              item.documentType == null ? 'assets/folder.png' : 'assets/doc.png',
                               color: AppColors.kTextFieldInput,
                               scale: 30,
                             )),
@@ -125,7 +131,7 @@ class _DocumentsState extends State<Documents> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              item.folderName??'',
+                              item.folderName ?? '',
                               style: AppStyles.c656262W500S16,
                               maxLines: 2,
                             ),
@@ -134,14 +140,14 @@ class _DocumentsState extends State<Documents> {
                               style: AppStyles.c656262W200S14,
                               maxLines: 2,
                             ),
-                            if (item.documentStatus=='Accepted') ...{
+                            if (item.documentStatus == 'Accepted') ...{
                               Text(
                                 'Accepted at ${DateFormat('yyyy-MM-dd HH:mm').format(item.disapprovedAt!)}',
                                 style: AppStyles.c656262W400S16.copyWith(color: Colors.green),
                                 maxLines: 2,
                               )
                             },
-                            if (item.documentStatus=='Rejected') ...{
+                            if (item.documentStatus == 'Rejected') ...{
                               Text(
                                 'Rejected at ${DateFormat('yyyy-MM-dd HH:mm').format(item.disapprovedAt!)}',
                                 style: AppStyles.c656262W400S16.copyWith(color: Colors.red),
@@ -150,8 +156,8 @@ class _DocumentsState extends State<Documents> {
                             },
                           ],
                         )),
-                        if(item.documentType!=null)...{
-                        popupMenu(),
+                        if (item.documentType != null) ...{
+                          popupMenu(item),
                         }
                         /*const RotatedBox(
                           quarterTurns: 2,
@@ -413,29 +419,41 @@ class _DocumentsState extends State<Documents> {
     );
   }
 
-  popupMenu() {
+  popupMenu(Document item) {
     return PopupMenuButton<int>(
       child: Icon(Icons.more_vert),
       padding: EdgeInsets.zero,
       surfaceTintColor: Colors.white,
       position: PopupMenuPosition.under,
       itemBuilder: (context) => [
-        popupMenuItem(1, 'View', Icons.remove_red_eye, () {}),
-        popupMenuItem(2, 'Download', Icons.download, () {}),
+        popupMenuItem(1, 'View', Icons.remove_red_eye, () {
+          CommonFunctions.navigate(context, ViewDocument(item.id.toString()));
+        }),
+        popupMenuItem(2, 'Download', Icons.download, () {
+          downloadDoc(item);
+        }),
         popupMenuItem(3, 'Signature', Icons.edit, () {
           AppWidgets.showAlert(
             context,
-            'Please Confirm your action',
+            'Please confirm your action',
             'Reject',
             'Accept',
-            () {},
-            () {},
+            () {
+              updateStatus(item, context,'rejected');
+            },
+            () {
+              updateStatus(item, context,'accepted');
+            },
           );
         }),
       ],
       offset: Offset(0, 0),
       elevation: 2,
     );
+  }
+
+  void updateStatus(Document item, BuildContext context,String status) {
+    _notifier.updateDocumentStatus(item, status, pagingController, pagingController.itemList!.indexOf(item),context);
   }
 
   PopupMenuItem<int> popupMenuItem(int value, String label, IconData iconData, void Function()? onTap) {
@@ -453,5 +471,24 @@ class _DocumentsState extends State<Documents> {
         ],
       ),
     );
+  }
+
+  Future<void> downloadDoc(Document item) async {
+    try {
+      CommonFunctions.showLoader(context);
+      Uint8List bytes = await http.readBytes(Uri.parse('${EndPoints.documents}/${item.id}'),
+          headers: {'Authorization': 'Bearer ${SharedPrefUtils.instance.getString(TOKEN)}'});
+      await CommonFunctions.downloadAndSavePdf(bytes, item.folderName!).then(
+        (value) {
+          if (value.isNotEmpty) {
+            CommonFunctions.showToast('$value\nDownloaded successfully', success: true);
+          }
+        },
+      );
+    } catch (e) {
+      print(e);
+    } finally {
+      CommonFunctions.dismissLoader(context);
+    }
   }
 }

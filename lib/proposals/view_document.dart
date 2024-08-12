@@ -10,8 +10,8 @@ import '../utils/end_points.dart';
 import '../utils/shared_pref_utils.dart';
 
 class ViewDocument extends StatefulWidget {
-  final ProposalModel model;
-  const ViewDocument(this.model,{super.key});
+  final String documentId;
+  const ViewDocument(this.documentId,{super.key});
 
   @override
   State<ViewDocument> createState() => _ViewDocumentState();
@@ -44,7 +44,7 @@ class _ViewDocumentState extends State<ViewDocument> {
   ///Get the PDF document as bytes
   void getPdfBytes() async {
     _documentBytes = await http.readBytes(Uri.parse(
-        '${EndPoints.baseUrl}documents/${widget.model.documentId}'), headers: {'Authorization': 'Bearer ${SharedPrefUtils.instance.getString(TOKEN)}'});
+        '${EndPoints.baseUrl}documents/${widget.documentId}'), headers: {'Authorization': 'Bearer ${SharedPrefUtils.instance.getString(TOKEN)}'});
     setState(() {});
   }
 

@@ -32,24 +32,40 @@ class _UploadDocumentState extends State<UploadDocument> {
           children: [
             selectionCell(
                 title: 'File',
-                content: _notifier.image != null ? _notifier.image!.name : 'Click to upload you document',
+                content: _notifier.image != null ? _notifier.image!.name : 'Click to upload your document',
                 onSelectTap: () {
-                  AppWidgets.openMediaSelectionBottomSheet(context,onCameraClick: () async {
-                    final ImagePicker picker = ImagePicker();
-                    final XFile? photo = await picker.pickImage(source: ImageSource.camera);
-                    _notifier.selectImage(photo);
-                    Navigator.pop(context);
-                  },onFileClick: () async {
-                    final ImagePicker picker = ImagePicker();
-                    final XFile? image = await picker.pickMedia();
-                    _notifier.selectImage(image);
-                    Navigator.pop(context);
-                  },);
+                  AppWidgets.openMediaSelectionBottomSheet(
+                    context,
+                    onCameraClick: () async {
+                      final ImagePicker picker = ImagePicker();
+                      await picker.pickImage(source: ImageSource.camera).then(
+                        (value) {
+                          _notifier.selectImage(value);
+                          Navigator.pop(context);
+                        },
+                      );
+                    },
+                    onFileClick: () async {
+                      final ImagePicker picker = ImagePicker();
+                      final XFile? image = await picker.pickMedia();
+                      _notifier.selectImage(image);
+                      Navigator.pop(context);
+                    },
+                  );
                 },
                 onCloseTap: () {
                   _notifier.removeSelectedImage();
                 },
                 isSelected: _notifier.image != null),
+            if (_notifier.errorMsg.isNotEmpty) ...{
+              SizedBox(
+                height: rSize * 0.01,
+              ),
+              Text(
+                _notifier.errorMsg,
+                style: AppStyles.errorStyle,
+              ),
+            },
             SizedBox(
               height: rSize * 0.02,
             ),
@@ -71,13 +87,12 @@ class _UploadDocumentState extends State<UploadDocument> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    if(!isButtonDisabled()){
-                      // _notifier.uploadDoc(context);
+                    if (!isButtonDisabled()) {
+                      _notifier.uploadDoc(context);
                     }
                   },
-                  child: AppWidgets.btn('Upload',
-                      horizontalPadding: rSize * 0.03,
-                      bgColor: isButtonDisabled() ? AppColors.kHint : AppColors.kViolate),
+                  child:
+                      AppWidgets.btn('Upload', horizontalPadding: rSize * 0.03, bgColor: isButtonDisabled() ? AppColors.kHint : AppColors.kViolate),
                 ),
               ],
             )
@@ -112,7 +127,9 @@ class _UploadDocumentState extends State<UploadDocument> {
             ],
           ),
         ),
-        SizedBox(width: rSize*0.015,),
+        SizedBox(
+          width: rSize * 0.015,
+        ),
         if (!isSelected) ...{selectButton(onSelectTap)} else ...{closeButton(onCloseTap)}
       ],
     );
@@ -146,5 +163,4 @@ class _UploadDocumentState extends State<UploadDocument> {
           ),
         ));
   }
-
 }

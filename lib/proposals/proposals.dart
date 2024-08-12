@@ -150,7 +150,7 @@ class _ProposalsState extends State<Proposals> {
                                               height: rSize * 0.01,
                                             ),
                                             GestureDetector(
-                                                onTap: () => CommonFunctions.navigate(context, ViewDocument(item)),
+                                                onTap: () => CommonFunctions.navigate(context, ViewDocument(item.documentId!)),
                                                 child: AppWidgets.btn('Read Proposal')),
                                             SizedBox(
                                               height: rSize * 0.01,

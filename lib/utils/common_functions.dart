@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'dart:math' as math;
 
@@ -17,6 +17,33 @@ class CommonFunctions{
       backgroundColor: success?Colors.green:Colors.redAccent,
       textColor: Colors.white,
     );
+  }
+
+  static Future<String> downloadAndSavePdf(Uint8List bytes,String fileName) async {
+    try {
+      /*final status = await Permission.storage.request();
+      if (!status.isGranted) {
+        // Handle permission denied
+        CommonFunctions.showToast('Permission denied');
+        return '';
+      }*/
+      String dir='';
+      if(Platform.isAndroid) {
+        dir = (await getExternalStorageDirectory())!.path;
+      } else if(Platform.isIOS) {
+        dir = (await getApplicationDocumentsDirectory()).path;
+      }
+      final file = File('$dir/$fileName');
+      if (await file.exists()) {
+        await file.writeAsBytes(bytes);
+        return file.path;
+      }
+      // final response = await http.get(Uri.parse(url));
+      return file.path;
+    } catch (e) {
+      print(e);
+      return '';
+    }
   }
 
   static showLoader(BuildContext context) {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kleber_bank/utils/api_calls.dart';
+import 'package:kleber_bank/utils/common_functions.dart';
 
 class ProfileController extends ChangeNotifier{
   bool hideCurrentPwd=true,hideNewPwd=true,hideConfirmNewPwd=true;
@@ -27,5 +29,13 @@ class ProfileController extends ChangeNotifier{
   void changeLanguage(int language) {
     selectedLanguage=language;
     notifyListeners();
+  }
+
+  void changePassword(BuildContext context) {
+    CommonFunctions.showLoader(context);
+    ApiCalls.changePassword(currentPwdController.text, newPwdController.text).then((value) {
+      CommonFunctions.dismissLoader(context);
+      Navigator.pop(context);
+    },);
   }
 }

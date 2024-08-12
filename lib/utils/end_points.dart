@@ -9,6 +9,7 @@ class EndPoints{
   static String verifyOtp='${baseUrl}portal_auth/verification_code';
   static String termOfService='${baseUrl}portal_auth/term_of_service';
   static String acceptanceTermsOfService='${baseUrl}portal_auth/acceptance_terms_of_service';
+  static String changePassword='${baseUrl}portal_auth/change_password';
 
   // MARKET
   static String markets='${baseUrl}markets';

@@ -12,6 +12,7 @@ class AppStyles {
   static double px28 = rSize * 0.027;
 
   static double px12 = rSize * 0.012;
+  static double px8 = rSize * 0.008;
   static double px14 = rSize * 0.014;
   static double px18 = rSize * 0.018;
   static double px20 = rSize * 0.020;
@@ -33,7 +34,7 @@ class AppStyles {
   static TextStyle cFFFFFFW400S18 = GoogleFonts.rubik(fontWeight: FontWeight.w400, fontSize: px18, color: Colors.white);
   static TextStyle cFFFFFFW400S16 = GoogleFonts.rubik(fontWeight: FontWeight.w400, fontSize: px16, color: Colors.white);
   static TextStyle cRedW400S18 = GoogleFonts.rubik(fontWeight: FontWeight.w400, fontSize: px18, color: Colors.redAccent);
-  static TextStyle errorStyle = GoogleFonts.rubik(fontWeight: FontWeight.w400, fontSize: px18, color: AppColors.kErrorBorderColor,);
+  static TextStyle errorStyle = GoogleFonts.rubik(fontWeight: FontWeight.w400, fontSize: px14, color: AppColors.kErrorBorderColor,height: 1);
   static TextStyle errorStyle16 = GoogleFonts.rubik(fontWeight: FontWeight.w400, fontSize: px16, color: AppColors.kErrorBorderColor);
 
 

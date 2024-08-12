@@ -53,6 +53,7 @@ dependencies:
   flutter_html:
   qr_flutter:
   syncfusion_flutter_pdfviewer: ^26.2.7
+  path_provider:
 
 dev_dependencies:
   flutter_test:
