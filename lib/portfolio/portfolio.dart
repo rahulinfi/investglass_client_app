@@ -61,7 +61,6 @@ class _PortfolioState extends State<Portfolio> {
         child: PagedListView<int, PortfolioModel>(
           pagingController: pagingController,
           // shrinkWrap: true,
-          padding: EdgeInsets.symmetric(horizontal: rSize * 0.015),
           builderDelegate: PagedChildBuilderDelegate<PortfolioModel>(noItemsFoundIndicatorBuilder: (context) {
             return const SizedBox();
           }, itemBuilder: (context, item, index) {
