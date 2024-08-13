@@ -214,7 +214,7 @@ class _OTPScreenState extends State<OTPScreen> {
           }
         },
         keyboardType: TextInputType.number,
-        decoration: AppStyles.inputDecoration(label: '', counterText: ''),
+        decoration: AppStyles.inputDecoration(context,label: '', counterText: ''),
       ),
     );
   }

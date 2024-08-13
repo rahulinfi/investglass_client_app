@@ -266,7 +266,7 @@ class _DocumentsState extends State<Documents> {
                       height: rSize * 0.015,
                     ),
                     TextFormField(
-                      decoration: AppStyles.inputDecoration(label: 'File Name'),
+                      decoration: AppStyles.inputDecoration(context,label: 'File Name'),
                     ),
                     SizedBox(
                       height: rSize * 0.015,
@@ -320,7 +320,7 @@ class _DocumentsState extends State<Documents> {
                           },
                         );
                       },
-                      decoration: AppStyles.inputDecoration(label: 'From-To Date'),
+                      decoration: AppStyles.inputDecoration(context,label: 'From-To Date'),
                     ),
                     SizedBox(
                       height: rSize * 0.02,

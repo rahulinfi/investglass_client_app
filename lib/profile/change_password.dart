@@ -39,7 +39,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   }
                 },
                 obscureText: _notifier.hideCurrentPwd,
-                decoration: AppStyles.inputDecoration(
+                decoration: AppStyles.inputDecoration(context,
                     label: 'Current Password',
                     suffix: GestureDetector(
                         onTap: () {
@@ -58,7 +58,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   }
                 },
                 obscureText: _notifier.hideNewPwd,
-                decoration: AppStyles.inputDecoration(
+                decoration: AppStyles.inputDecoration(context,
                     label: 'New Password',
                     suffix: GestureDetector(
                         onTap: () {
@@ -77,7 +77,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   }
                 },
                 obscureText: _notifier.hideConfirmNewPwd,
-                decoration: AppStyles.inputDecoration(
+                decoration: AppStyles.inputDecoration(context,
                     label: 'Confirm New Password',
                     suffix: GestureDetector(
                         onTap: () {

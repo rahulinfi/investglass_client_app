@@ -340,7 +340,7 @@ class _ProposalsState extends State<Proposals> {
                     TextFormField(
                       controller: advisorController,
                       onChanged: (value) {},
-                      decoration: AppStyles.inputDecoration(label: 'Advisor'),
+                      decoration: AppStyles.inputDecoration(context,label: 'Advisor'),
                     ),
                     SizedBox(
                       height: rSize * 0.02,
@@ -348,7 +348,7 @@ class _ProposalsState extends State<Proposals> {
                     TextFormField(
                       controller: proposalNameController,
                       onChanged: (value) {},
-                      decoration: AppStyles.inputDecoration(label: 'Proposal Name'),
+                      decoration: AppStyles.inputDecoration(context,label: 'Proposal Name'),
                     ),
                     SizedBox(
                       height: rSize * 0.02,

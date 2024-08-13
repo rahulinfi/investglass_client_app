@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../main.dart';
 import 'app_colors.dart';
 import 'app_widgets.dart';
+import 'flutter_flow_theme.dart';
 
 class AppStyles {
   static double px15 = rSize * 0.015;
@@ -81,6 +82,7 @@ class AppStyles {
   }
 
   static InputDecoration inputDecoration(
+      BuildContext context,
       {String? hint,
       String? label,
       String? counterText,
@@ -88,50 +90,52 @@ class AppStyles {
       Widget? suffix,
       String? preffixText,
       // TextStyle? hintStyle,
+        TextStyle? labelStyle,
+        Color? fillColor,
       EdgeInsetsGeometry? contentPadding,
       Color? borderColor}) {
     return InputDecoration(
-      hintText: hint,
-      label: AppWidgets.textFieldLabel(label??''),
-      counterText: counterText,
-      // counterStyle: c002055W500S12.copyWith(color: Color(0XFFDCD9D9)),
-      prefix: prefix,
-      suffix: suffix,prefixText: preffixText,
-      errorStyle: errorStyle,
-
-      hintStyle: c929292W500S14,
-      contentPadding: contentPadding ?? EdgeInsets.all(rSize * 0.013),
-      // Inside box padding
-      border: OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 1,
-            color: borderColor ?? AppColors.kBorderColor,
-          ),
-          borderRadius: BorderRadius.circular(10)),
+      labelText:
+      label,
+      labelStyle: labelStyle,
       enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 1,
-            color: borderColor ?? AppColors.kBorderColor,
-          ),
-          borderRadius: BorderRadius.circular(10)),
+        borderSide: BorderSide(
+          color: FlutterFlowTheme.of(context)
+              .alternate,
+          width: 2.0,
+        ),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
       focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 1,
-            color: borderColor ?? AppColors.kBorderColor,
-          ),
-          borderRadius: BorderRadius.circular(10)),
-      focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 1,
-            color: AppColors.kErrorBorderColor,
-          ),
-          borderRadius: BorderRadius.circular(10)),
+        borderSide: BorderSide(
+          color:
+          FlutterFlowTheme.of(context).primary,
+          width: 2.0,
+        ),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
       errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 1,
-            color: AppColors.kErrorBorderColor,
-          ),
-          borderRadius: BorderRadius.circular(10)),
+        borderSide: BorderSide(
+          color: FlutterFlowTheme.of(context)
+              .alternate,
+          width: 2.0,
+        ),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: FlutterFlowTheme.of(context)
+              .alternate,
+          width: 2.0,
+        ),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      filled: true,
+      fillColor: fillColor,
+      contentPadding:
+      const EdgeInsetsDirectional.fromSTEB(
+          24.0, 24.0, 0.0, 24.0),
+      suffixIcon: suffix,
     );
   }
 }

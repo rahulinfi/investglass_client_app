@@ -40,7 +40,7 @@ class _AddTransactionState extends State<AddTransaction> {
             SizedBox(height: rSize*0.015,),
             TextFormField(
               readOnly: true,
-              decoration: AppStyles.inputDecoration(hint: 'Name, ISIN, FIGI or Ticket',label:'Name, ISIN, FIGI or Ticket' ),
+              decoration: AppStyles.inputDecoration(context,hint: 'Name, ISIN, FIGI or Ticket',label:'Name, ISIN, FIGI or Ticket' ),
             ),
             SizedBox(height: rSize*0.015,),
             DropdownSearch<String>(
@@ -62,35 +62,35 @@ class _AddTransactionState extends State<AddTransaction> {
               onTap: () {
                 // openDateTimePicker();
               },
-              decoration: AppStyles.inputDecoration(hint: 'Select Date and Time',label:'Time In Force' ),
+              decoration: AppStyles.inputDecoration(context,hint: 'Select Date and Time',label:'Time In Force' ),
             ),
             SizedBox(height: rSize*0.015,),
             TextFormField(
-              decoration: AppStyles.inputDecoration(hint: 'Enter note...',label:'Notes' ),
+              decoration: AppStyles.inputDecoration(context,hint: 'Enter note...',label:'Notes' ),
             ),
             SizedBox(height: rSize*0.015,),
             TextFormField(
-              decoration: AppStyles.inputDecoration(hint: 'Order Type',label:'Order Type' ),
+              decoration: AppStyles.inputDecoration(context,hint: 'Order Type',label:'Order Type' ),
             ),
             SizedBox(height: rSize*0.015,),
             TextFormField(
               keyboardType: TextInputType.number,
-              decoration: AppStyles.inputDecoration(hint: 'Quantity',label:'Quantity', ),
+              decoration: AppStyles.inputDecoration(context,hint: 'Quantity',label:'Quantity', ),
             ),
             SizedBox(height: rSize*0.015,),
             TextFormField(
               readOnly: true,
-              decoration: AppStyles.inputDecoration(label:'Current Price (\$)'),
+              decoration: AppStyles.inputDecoration(context,label:'Current Price (\$)'),
             ),
             SizedBox(height: rSize*0.015,),
             TextFormField(
               readOnly: true,
-              decoration: AppStyles.inputDecoration(label:'Limit Price (\$)'),
+              decoration: AppStyles.inputDecoration(context,label:'Limit Price (\$)'),
             ),
             SizedBox(height: rSize*0.015,),
             TextFormField(
               readOnly: true,
-              decoration: AppStyles.inputDecoration(label:'Amount (\$)'),
+              decoration: AppStyles.inputDecoration(context,label:'Amount (\$)'),
             ),
             SizedBox(height: rSize*0.03,),
             Row(

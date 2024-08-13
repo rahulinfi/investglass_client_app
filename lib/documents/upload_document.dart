@@ -74,7 +74,7 @@ class _UploadDocumentState extends State<UploadDocument> {
               maxLines: 3,
               controller: _notifier.descController,
               textAlign: TextAlign.start,
-              decoration: AppStyles.inputDecoration(
+              decoration: AppStyles.inputDecoration(context,
                 label: 'Description',
                 hint: 'Write something...',
               ),

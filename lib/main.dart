@@ -18,26 +18,36 @@ import 'login/login_controller.dart';
 import 'market/market_controller.dart';
 
 double rSize = 0;
-void main() async{
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPrefUtils.createInstance();
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(
-      create: (context) => LoginController(),
-    ),ChangeNotifierProvider(
-      create: (context) => DashboardController(),
-    ),ChangeNotifierProvider(
-      create: (context) => PortfolioController(),
-    ),ChangeNotifierProvider(
-      create: (context) => ProfileController(),
-    ),ChangeNotifierProvider(
-      create: (context) => ProposalController(),
-    ),ChangeNotifierProvider(
-      create: (context) => MarketController(),
-    ),ChangeNotifierProvider(
-      create: (context) => DocumentsController(),
-    ),
-  ],child:const MyApp() ,));
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (context) => LoginController(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => DashboardController(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => PortfolioController(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => ProfileController(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => ProposalController(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => MarketController(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => DocumentsController(),
+      ),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -50,6 +60,7 @@ class MyApp extends StatelessWidget {
     rSize = pow((ksize.height * ksize.height) + (ksize.width * ksize.width), 1 / 2) as double;
     return MaterialApp(
       title: 'Flutter Demo',
+      themeMode: ThemeMode.dark,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -68,7 +79,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         popupMenuTheme: PopupMenuThemeData(
           color: Colors.white, // Background color of the menu
-surfaceTintColor: Colors.white,
+          surfaceTintColor: Colors.white,
 
           textStyle: TextStyle(color: Colors.white), // Text color in menu items
           shape: RoundedRectangleBorder(
@@ -79,7 +90,18 @@ surfaceTintColor: Colors.white,
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.bg),
         useMaterial3: true,
       ),
-      home: SharedPrefUtils.instance.getString(TOKEN).isEmpty?Login():Dashboard(),
+      darkTheme: ThemeData(
+          colorScheme: const ColorScheme(
+              primary: Color(0xFF325D80),
+              secondary: Color(0xFF000A13),
+              onPrimary: Colors.transparent,
+              onSecondary: Colors.transparent,
+              brightness: Brightness.dark,
+              error: Color(0xFFFF5963),
+              onError: Color(0xFFFF5963),
+              surface: Colors.transparent,
+              onSurface: Colors.transparent),),
+      home: SharedPrefUtils.instance.getString(TOKEN).isEmpty ? Login() : Dashboard(),
     );
   }
 }

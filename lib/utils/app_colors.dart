@@ -10,3 +10,13 @@ class AppColors {
       kHint = Color(0xFF929292),
       bg = Color(0XFFF5F5F5);
 }
+
+class DarkTheme{
+  Color bgTopGradient = const Color(0xFF325D80);
+  Color primaryBackground = const Color(0xFF000A13);
+}
+
+class LightTheme{
+  Color bgTopGradient = const Color(0xFF325D80);
+  Color primaryBackground = const Color(0xFFF5F7F9);
+}
